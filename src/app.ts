@@ -3,6 +3,7 @@ import cors from 'cors';
 import { logger } from './middlewares';
 
 import User from './services/user';
+import Pacient from './services/pacient';
 
 export function init() {
   const app = express();
@@ -32,6 +33,7 @@ export function init() {
 
   app.use('/api', logger, [
     User,
+    Pacient,
   ]);
 
   return { app };

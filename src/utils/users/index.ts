@@ -61,11 +61,11 @@ export const createUserUtil = async (user: User) => {
     }
 }
 
-export const updateUserUtil = async (userName: string, email: string, idUser: string) => {
+export const updateUserUtil = async (userName: string, email: string, Phone: number, idUser: string) => {
   try {
       return await new Promise((resolve, reject) => {
           dataBase.query(
-            `UPDATE users SET userName = '${userName}', email = '${email}' WHERE idUser = '${idUser}';`,
+            `UPDATE users SET userName = '${userName}', email = '${email}', Phone = ${Phone} WHERE idUser = '${idUser}';`,
             (err, data) => err ? reject(err) : resolve(data)
           );
         });

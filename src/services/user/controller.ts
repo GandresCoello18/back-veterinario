@@ -100,16 +100,16 @@ export const updateUser = async (req: Request, res: Response) => {
   req.logger.info({ status: 'start' });
 
   try {
-    const {userName, email} = req.body
+    const {userName, email, Phone} = req.body
     const user = req.user
   
-    if(!email || !userName){
+    if(!email || !userName || !Phone){
       const response = { status: 'No data user provided' };
       req.logger.warn(response);
       return res.status(400).json(response);
     }
 
-    await updateUserUtil(userName, email, user.idUser)
+    await updateUserUtil(userName, email, Phone, user.idUser)
 
     return res.status(200).json();
   } catch (error) {
