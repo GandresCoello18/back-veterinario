@@ -1,6 +1,20 @@
 import { Pacient } from "../../models/pacient";
 import { dataBase } from "../database";
 
+export const getPacientUtil = async () => {
+  try {
+      return await new Promise((resolve, reject) => {
+          dataBase.query(
+            `SELECT * FROM pacients ORDER BY nombre ASC LIMIT 20;`,
+            (err, data) => err ? reject(err) : resolve(data)
+          );
+        });
+  } catch (error) {
+      console.log(error.message);
+      return false;
+  }
+}
+
 export const createPacientUtil = async (pacient: Pacient) => {
     try {
         return await new Promise((resolve, reject) => {
