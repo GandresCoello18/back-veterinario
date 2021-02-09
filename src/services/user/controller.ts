@@ -52,14 +52,6 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json(response);
     }
 
-    const ExistPacient = await ExistPacientByUserUtil(email);
-
-    if(ExistPacient.length === 0){
-      const response = { status: 'No tienes mascotas registradas.' };
-      req.logger.warn(response);
-      return res.status(400).json(response);
-    }
-
     let user: User[];
 
       const userExist = await getUserUtil({email});
@@ -86,6 +78,14 @@ export const login = async (req: Request, res: Response) => {
         await createUserUtil(saveUser);
         user = [saveUser]
       }
+
+    const ExistPacient = await ExistPacientByUserUtil(email);
+
+    if(ExistPacient.length === 0 && !user[0].isAdmin){
+      const response = { status: 'No tienes mascotas registradas.' };
+      req.logger.warn(response);
+      return res.status(400).json(response);
+    }
 
     if(user?.length){
 
