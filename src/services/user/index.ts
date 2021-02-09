@@ -1,7 +1,7 @@
 import express from 'express';
 import { auth } from '../../middlewares/auth';
 
-import { getUser, login, newUser, getUsers, updateUser } from './controller';
+import { getUser, login, newUser, getUsers, updateUser, deleteUser } from './controller';
 
 const router = express.Router();
 const baseURL = '/users';
@@ -11,5 +11,6 @@ router.get(`${baseURL}/`, auth, getUsers);
 router.post(`${baseURL}/`, auth, newUser);
 router.post(`${baseURL}/login`, login);
 router.put(`${baseURL}/me`, auth, updateUser);
+router.delete(`${baseURL}/:idUser`, auth, deleteUser);
 
 export default router;

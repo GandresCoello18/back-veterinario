@@ -48,7 +48,7 @@ export const newPacients = async (req: Request, res: Response) => {
             const existPacient = await ExistPacientUtil(nombre, emailPerson);
             
             if(existPacient.length){
-                const response = { status: 'Este paciente ya esta registrado' };
+                const response = { status: 'Esta mascota ya esta registrado' };
                 req.logger.warn(response);
                 return res.status(400).json(response);
             }

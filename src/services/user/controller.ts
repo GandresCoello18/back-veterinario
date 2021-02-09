@@ -3,8 +3,9 @@ import { format } from 'date-fns'
 import Locale from 'date-fns/locale/es'
 import { User } from '../../models/users';
 import jwt from "jsonwebtoken";
-import {config, createUserUtil, dataBase, getUserUtil, updateUserUtil} from '../../utils';
+import {config, createUserUtil, dataBase, DeleteUserUtil, getUserUtil, updateUserUtil} from '../../utils';
 import { v4 as uuidv4 } from 'uuid';
+import { ExistPacientByUserUtil } from '../../utils/pacients';
 
 export const getUser = async (req: Request, res: Response) => {
     req.logger = req.logger.child({ service: 'users', serviceHandler: 'getUser' });
@@ -47,6 +48,14 @@ export const login = async (req: Request, res: Response) => {
 
     if(!email || !provider){
       const response = { status: 'No data user provided' };
+      req.logger.warn(response);
+      return res.status(400).json(response);
+    }
+
+    const ExistPacient = await ExistPacientByUserUtil(email);
+
+    if(ExistPacient.length === 0){
+      const response = { status: 'No tienes mascotas registradas.' };
       req.logger.warn(response);
       return res.status(400).json(response);
     }
@@ -151,6 +160,29 @@ export const newUser = async (req: Request, res: Response) => {
     }
 
     await createUserUtil(saveUser);
+
+    return res.status(200).json();
+
+  } catch (error) {
+    req.logger.error({ status: 'error', code: 500 });
+    return res.status(404).json();
+  }
+}
+
+export const deleteUser = async (req: Request, res: Response) => {
+  req.logger = req.logger.child({ service: 'users', serviceHandler: 'deleteUser' });
+  req.logger.info({ status: 'start' });
+
+  try {
+    const {idUser} = req.params
+  
+    if(!idUser){
+      const response = { status: 'No data idUser for user delete' };
+      req.logger.warn(response);
+      return res.status(400).json(response);
+    }
+
+    await DeleteUserUtil(idUser);
 
     return res.status(200).json();
 
