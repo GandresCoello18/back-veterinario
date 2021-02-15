@@ -4,6 +4,7 @@ import { logger } from './middlewares';
 
 import User from './services/user';
 import Pacient from './services/pacient';
+import Product from './services/product';
 
 export function init() {
   const app = express();
@@ -34,6 +35,7 @@ export function init() {
   app.use('/api', logger, [
     User,
     Pacient,
+    Product,
   ]);
 
   return { app };
