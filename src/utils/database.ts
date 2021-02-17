@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mysql from "mysql";
 import {config} from './config';
 
@@ -12,7 +13,7 @@ class Mysql {
       user: config.DB_USER,
       password: config.DB_HOST === 'localhost' ? '' : config.DB_PASSWORD,
       database: config.DB_NAME,
-      //port: config.DB_PORT,
+      port: config.DB_PORT,
     });
 
     connection.connect((err: any) => {

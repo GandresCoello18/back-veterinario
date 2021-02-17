@@ -1,7 +1,7 @@
 import * as envalid from 'envalid';
 import path from 'path';
 
-const { str } = envalid;
+const { str, num } = envalid;
 
 export const config = envalid.cleanEnv(
   process.env,
@@ -11,7 +11,7 @@ export const config = envalid.cleanEnv(
     DB_USER: str(),
     DB_PASSWORD: str(),
     DB_NAME: str(),
-    DB_PORT: str(),
+    DB_PORT: num(),
     JWT_SECRET: str(),
   },
   { strict: true, dotEnvPath: path.resolve(__dirname, '../../.env') },
