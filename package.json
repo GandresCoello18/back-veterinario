@@ -11,6 +11,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc-watch --onSuccess \"node build/app.js\"",
+    "start": "tsc-watch --onSuccess \"node build/app.js\"",
     "dev:ts": "ts-node-dev --respawn src/app.ts",
     "format": "prettier --write \"src/**/*.ts\" --write \"package.json\"",
     "format:check": "prettier --check \"src/**/*.ts\" --check \"package.json\"",
