@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import express from 'express';
 import cors from 'cors';
 import { logger } from './middlewares';
+import {config} from './utils/config';
 
 import User from './services/user';
 import Pacient from './services/pacient';
@@ -12,7 +14,8 @@ export function init() {
   app.use(cors({
     origin: [
       'http://localhost:3000',
-      'http://localhost:8080'
+      'http://localhost:8080',
+      'https://veterinaria-mundo-animal.vercel.app'
     ]
   }));
 
@@ -31,6 +34,7 @@ export function init() {
   });
 
   app.use("/static", express.static("public"));
+  app.set("port", config.PORT)
 
   app.use('/api', logger, [
     User,
@@ -41,8 +45,6 @@ export function init() {
   return { app };
 }
 
-if (require.main === module) {
-  init().app.listen(9000, () => {
-    console.log('🚀 Server ready at http://localhost:9000');
-  });
-}
+init().app.listen(init().app.get("port"), () => {
+  console.log(`🚀 Server ready at http://localhost:${init().app.get("port")}`);
+});
