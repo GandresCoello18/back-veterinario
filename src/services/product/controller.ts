@@ -24,7 +24,7 @@ export const newProducts = async (req: Request, res: Response) => {
     req.logger.info({ status: 'start' });
 
     try {
-        const { name, stock } = req.body
+        const { name, stock, description } = req.body
 
         if(!name || !stock){
             const response = { status: 'No data user provided' };
@@ -44,8 +44,9 @@ export const newProducts = async (req: Request, res: Response) => {
             idProducts: uuidv4(),
             name,
             stock,
-            source: '',
-            update_at: format(new Date(), 'yyyy-MM-dd HH:mm:ss')
+            source: req.file.originalname || null,
+            update_at: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+            description: description || null,
         }
 
         await createProductUtil(product)

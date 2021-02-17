@@ -3,5 +3,6 @@ export interface Products {
     name: string
     stock: number
     update_at: string | Date
-    source: string
+    source: string | null
+    description: string | null
 }
