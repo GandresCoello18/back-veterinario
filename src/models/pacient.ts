@@ -8,4 +8,6 @@ export interface Pacient {
     emailPerson: string | null
     avatar: string | null
     created_at: string | Date
+    sexo: string
+    nacimiento: Date | string
 }

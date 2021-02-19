@@ -19,7 +19,7 @@ export const createPacientUtil = async (pacient: Pacient) => {
     try {
         return await new Promise((resolve, reject) => {
             dataBase.query(
-              `INSERT INTO pacients (idPacient, tipo, idCategory, nombre, altura, peso, emailPerson, avatar, created_at) VALUES ('${pacient.idPacient}', '${pacient.tipo}', '${pacient.idCategory}', ${pacient.nombre ? `'${pacient.nombre}'` : null}, ${pacient.altura}, ${pacient.peso}, ${pacient.emailPerson ? `'${pacient.emailPerson}'` : null}, ${pacient.avatar ? `'${pacient.avatar}'` : null}, '${pacient.created_at}');`,
+              `INSERT INTO pacients (idPacient, tipo, idCategory, nombre, altura, peso, emailPerson, avatar, created_at, sexo, nacimiento) VALUES ('${pacient.idPacient}', '${pacient.tipo}', '${pacient.idCategory}', ${pacient.nombre ? `'${pacient.nombre}'` : null}, ${pacient.altura}, ${pacient.peso}, ${pacient.emailPerson ? `'${pacient.emailPerson}'` : null}, ${pacient.avatar ? `'${pacient.avatar}'` : null}, '${pacient.created_at}', '${pacient.sexo}', '${pacient.nacimiento}');`,
               (err, data) => err ? reject(err) : resolve(data)
             );
           });
