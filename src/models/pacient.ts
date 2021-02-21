@@ -1,6 +1,7 @@
 export interface Pacient {
     idPacient: string
     tipo: string
+    raza: string
     idCategory: string
     nombre: string | null
     altura: number

@@ -24,9 +24,9 @@ export const newPacients = async (req: Request, res: Response) => {
     req.logger.info({ status: 'start' });
 
     try {
-        const { tipo, idCategory, nombre, altura, peso, emailPerson, avatar, sexo, nacimiento } = req.body
+        const { tipo, idCategory, nombre, altura, peso, emailPerson, avatar, sexo, nacimiento, raza } = req.body
 
-        if(!tipo || !idCategory || !altura || !peso || !sexo || !nacimiento){
+        if(!tipo || !idCategory || !altura || !peso || !sexo || !nacimiento || !raza){
             const response = { status: 'No data user provided' };
             req.logger.warn(response);
             return res.status(400).json(response);
@@ -43,6 +43,7 @@ export const newPacients = async (req: Request, res: Response) => {
             avatar: avatar || null,
             created_at: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
             sexo,
+            raza,
             nacimiento,
         }
 
