@@ -56,3 +56,17 @@ export const ExistPacientByUserUtil = async (emailPerson: string) => {
       return [];
   }
 }
+
+export const DeletePacientUtil = async (idPaciente: string) => {
+  try {
+      return await new Promise((resolve, reject) => {
+          dataBase.query(
+            `DELETE FROM pacients WHERE idPacient = '${idPaciente}';`,
+            (err, data) => err ? reject(err) : resolve(data)
+          );
+        });
+  } catch (error) {
+      console.log(error.message);
+      return false;
+  }
+}
