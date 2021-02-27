@@ -7,6 +7,7 @@ import {config} from './utils/config';
 import User from './services/user';
 import Pacient from './services/pacient';
 import Product from './services/product';
+import Vacunas from './services/vacunas';
 
 export function init() {
   const app = express();
@@ -40,6 +41,7 @@ export function init() {
     User,
     Pacient,
     Product,
+    Vacunas,
   ]);
 
   return { app };

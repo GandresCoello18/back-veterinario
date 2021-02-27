@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { User } from "../../models/users";
 import { dataBase } from "../database";
 
@@ -18,7 +19,7 @@ export const getUserUtil = async (option: {
 
       let user: User[] = [];
       let sql: string;
-      let response_campo: string = 'idUser, userName, email, created_at, isAdmin, avatar, provider';
+      const response_campo = 'idUser, userName, email, created_at, isAdmin, avatar, provider';
 
       if(option.idUser) {
         sql = `SELECT ${response_campo} FROM users WHERE idUser = '${option.idUser}';`;

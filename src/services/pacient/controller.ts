@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Pacient } from '../../models/pacient';
-import { createPacientUtil, DeletePacientUtil, ExistPacientUtil, getPacientUtil } from '../../utils/pacients';
+import { createPacientUtil, DeletePacientUtil, ExistPacientUtil, getOnlyPacientUtil, getPacientUtil } from '../../utils/pacients';
 
 export const getPacients = async (req: Request, res: Response) => {
     req.logger = req.logger.child({ service: 'pacient', serviceHandler: 'getPacients' });
@@ -13,6 +13,27 @@ export const getPacients = async (req: Request, res: Response) => {
         const users = await getPacientUtil();
 
         return res.status(200).json({ users });
+    } catch (error) {
+        req.logger.error({ status: 'error', code: 500 });
+        return res.status(404).json();
+    }
+};
+
+export const getPacient = async (req: Request, res: Response) => {
+    req.logger = req.logger.child({ service: 'pacient', serviceHandler: 'getPacient' });
+    req.logger.info({ status: 'start' });
+
+    try {
+        const { idPacient } = req.params
+
+        if(!idPacient){
+            const response = { status: 'No data id pacient provided' };
+            req.logger.warn(response);
+        }
+
+        const pacient = await getOnlyPacientUtil(idPacient);
+
+        return res.status(200).json({ pacient: pacient[0] });
     } catch (error) {
         req.logger.error({ status: 'error', code: 500 });
         return res.status(404).json();

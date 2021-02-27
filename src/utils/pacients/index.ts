@@ -8,10 +8,24 @@ export const getPacientUtil = async () => {
             `SELECT * FROM pacients ORDER BY nombre ASC LIMIT 20;`,
             (err, data) => err ? reject(err) : resolve(data)
           );
-        });
+        }) as Pacient[];
   } catch (error) {
       console.log(error.message);
-      return false;
+      return [];
+  }
+}
+
+export const getOnlyPacientUtil = async (idPacient: string) => {
+  try {
+      return await new Promise((resolve, reject) => {
+          dataBase.query(
+            `SELECT * FROM pacients WHERE idPacient = '${idPacient}' ORDER BY nombre ASC LIMIT 20;`,
+            (err, data) => err ? reject(err) : resolve(data)
+          );
+        }) as Pacient[];
+  } catch (error) {
+      console.log(error.message);
+      return [];
   }
 }
 
