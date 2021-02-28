@@ -19,7 +19,7 @@ export const getOnlyPacientUtil = async (idPacient: string) => {
   try {
       return await new Promise((resolve, reject) => {
           dataBase.query(
-            `SELECT * FROM pacients WHERE idPacient = '${idPacient}' ORDER BY nombre ASC LIMIT 20;`,
+            `SELECT * FROM pacients WHERE idPacient = '${idPacient}';`,
             (err, data) => err ? reject(err) : resolve(data)
           );
         }) as Pacient[];
