@@ -24,4 +24,5 @@ export interface MisVacunasPacient {
     id_vacuna: string
     nombre_paciente: string
     avatar: string
+    userName: string
 }

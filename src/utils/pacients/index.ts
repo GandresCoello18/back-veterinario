@@ -5,7 +5,7 @@ export const getPacientUtil = async () => {
   try {
       return await new Promise((resolve, reject) => {
           dataBase.query(
-            `SELECT * FROM pacients ORDER BY nombre ASC LIMIT 20;`,
+            `SELECT * FROM pacients ORDER BY nombre ASC;`,
             (err, data) => err ? reject(err) : resolve(data)
           );
         }) as Pacient[];
