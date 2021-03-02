@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import { Request, Response } from 'express';
 import Locale from 'date-fns/locale/es'
 import { v4 as uuidv4 } from 'uuid';
-import { CreateVacunasPacientUtil, getNameVacunasUtil, getVacunasPacientUtil, getVacunasUtil } from '../../utils/vacunas';
+import { CreateVacunasPacientUtil, DeleteVacunasPacientUtil, getNameVacunasUtil, getVacunasPacientUtil, getVacunasUtil } from '../../utils/vacunas';
 import { getOnlyPacientUtil, getPacientUtil } from '../../utils/pacients';
 import randomcolor from 'randomcolor';
 import { EdadMeses } from '../../helper/edad-vacunas';
@@ -66,6 +66,7 @@ export const getMisVacunas = async (req: Request, res: Response) => {
 
                 const ObjVacuna = {
                     created_at: '',
+                    id_vacunas_pacient: '',
                     doctor: '',
                     nombre_paciente: pacient[0].nombre,
                     emailPerson: pacient[0].emailPerson,
@@ -78,6 +79,7 @@ export const getMisVacunas = async (req: Request, res: Response) => {
                 }
 
                 if(misVacunas.length){
+                    ObjVacuna.id_vacunas_pacient = misVacunas[0].id_vacunas_pacient
                     ObjVacuna.doctor = misVacunas[0].userName
                     ObjVacuna.isVacuna = 'Completado'
                     ObjVacuna.created_at = format(new Date(`${misVacunas[0].created_at}`), 'PPPP', {locale: Locale});
@@ -188,6 +190,28 @@ export const getNameVacunas = async (req: Request, res: Response) => {
         const vacunas = await getNameVacunasUtil(pacient[0].tipo, pacient[0].idPacient);
 
         return res.status(200).json({ vacunas });
+    } catch (error) {
+        req.logger.error({ status: 'error', code: 500 });
+        return res.status(404).json();
+    }
+};
+
+export const deleteVacunaPacient = async (req: Request, res: Response) => {
+    req.logger = req.logger.child({ service: 'vacunas', serviceHandler: 'deleteVacunaPacient' });
+    req.logger.info({ status: 'start' });
+
+    try {
+        const { id_vacunas_pacient } = req.params
+
+        if(!id_vacunas_pacient){
+            const response = { status: 'No tipo Pacient or id vacuna provided' };
+            req.logger.warn(response);
+            return res.status(400).json(response);
+        }
+
+        await DeleteVacunasPacientUtil(id_vacunas_pacient);
+
+        return res.status(200).json();
     } catch (error) {
         req.logger.error({ status: 'error', code: 500 });
         return res.status(404).json();

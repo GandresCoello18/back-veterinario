@@ -19,7 +19,7 @@ export const getUserUtil = async (option: {
 
       let user: User[] = [];
       let sql: string;
-      const response_campo = 'idUser, userName, email, created_at, isAdmin, avatar, provider';
+      const response_campo = 'idUser, userName, email, created_at, isAdmin, avatar, provider, Phone';
 
       if(option.idUser) {
         sql = `SELECT ${response_campo} FROM users WHERE idUser = '${option.idUser}';`;

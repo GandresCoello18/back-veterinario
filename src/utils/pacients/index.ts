@@ -15,6 +15,20 @@ export const getPacientUtil = async () => {
   }
 }
 
+export const getPacientByUserUtil = async (email: string) => {
+  try {
+      return await new Promise((resolve, reject) => {
+          dataBase.query(
+            `SELECT * FROM pacients WHERE emailPerson = '${email}' ORDER BY nombre ASC;`,
+            (err, data) => err ? reject(err) : resolve(data)
+          );
+        }) as Pacient[];
+  } catch (error) {
+      console.log(error.message);
+      return [];
+  }
+}
+
 export const getOnlyPacientUtil = async (idPacient: string) => {
   try {
       return await new Promise((resolve, reject) => {

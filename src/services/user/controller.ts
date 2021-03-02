@@ -59,7 +59,7 @@ export const login = async (req: Request, res: Response) => {
       if(userExist.length){
         user = await new Promise((resolve, reject) => {
           dataBase.query(
-            `SELECT * FROM users WHERE email = '${email}' AND provider = '${provider}';`,
+            `SELECT * FROM users WHERE email = '${email}';`,
             (err, data) => err ? reject(err) : resolve(data)
           );
         }) as User[];
@@ -81,7 +81,7 @@ export const login = async (req: Request, res: Response) => {
 
     const ExistPacient = await ExistPacientByUserUtil(email);
 
-    if(ExistPacient.length === 0 && !user[0].isAdmin){
+    if(ExistPacient.length === 0){
       const response = { status: 'No tienes mascotas registradas.' };
       req.logger.warn(response);
       return res.status(400).json(response);
