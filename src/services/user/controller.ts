@@ -81,7 +81,7 @@ export const login = async (req: Request, res: Response) => {
 
     const ExistPacient = await ExistPacientByUserUtil(email);
 
-    if(ExistPacient.length === 0){
+    if(ExistPacient.length === 0 && !user[0].isAdmin){
       const response = { status: 'No tienes mascotas registradas.' };
       req.logger.warn(response);
       return res.status(400).json(response);
