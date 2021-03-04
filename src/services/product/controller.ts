@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Products } from '../../models/product';
-import { createProductUtil, getProductNameUtil, getProductsUtil } from '../../utils/products';
+import { createProductUtil, getProductNameUtil, getProductsByTipoPacientUtil, getProductsUtil } from '../../utils/products';
 
 export const getProducts = async (req: Request, res: Response) => {
     req.logger = req.logger.child({ service: 'products', serviceHandler: 'getProducts' });
@@ -19,12 +19,34 @@ export const getProducts = async (req: Request, res: Response) => {
     }
 };
 
+export const getProductsByTipoPacient = async (req: Request, res: Response) => {
+    req.logger = req.logger.child({ service: 'products', serviceHandler: 'getProductsByTipoPacient' });
+    req.logger.info({ status: 'start' });
+
+    try {
+        const { tipoPacient } = req.params;
+
+        if(!tipoPacient){
+            const response = { status: 'No data tipo Pacient provided' };
+            req.logger.warn(response);
+            return res.status(400).json(response);
+        }
+
+        const products = await getProductsByTipoPacientUtil(tipoPacient);
+
+        return res.status(200).json({ products });
+    } catch (error) {
+        req.logger.error({ status: 'error', code: 500 });
+        return res.status(404).json();
+    }
+};
+
 export const newProducts = async (req: Request, res: Response) => {
     req.logger = req.logger.child({ service: 'products', serviceHandler: 'newProducts' });
     req.logger.info({ status: 'start' });
 
     try {
-        const { name, stock, description } = req.body
+        const { name, stock, description, tipo } = req.body
 
         if(!name || !stock){
             const response = { status: 'No data user provided' };
@@ -47,6 +69,7 @@ export const newProducts = async (req: Request, res: Response) => {
             source: req.file.originalname || null,
             update_at: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
             description: description || null,
+            tipo: tipo || null,
         }
 
         await createProductUtil(product)

@@ -5,4 +5,5 @@ export interface Products {
     update_at: string | Date
     source: string | null
     description: string | null
+    tipo: string | null
 }
