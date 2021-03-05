@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Products } from '../../models/product';
-import { createProductUtil, getProductNameUtil, getProductsByTipoPacientUtil, getProductsUtil } from '../../utils/products';
+import { createProductUtil, deleteProductUtil, getProductNameUtil, getProductsByTipoPacientUtil, getProductsUtil } from '../../utils/products';
 
 export const getProducts = async (req: Request, res: Response) => {
     req.logger = req.logger.child({ service: 'products', serviceHandler: 'getProducts' });
@@ -73,6 +73,28 @@ export const newProducts = async (req: Request, res: Response) => {
         }
 
         await createProductUtil(product)
+
+        return res.status(200).json();
+    } catch (error) {
+        req.logger.error({ status: 'error', code: 500 });
+        return res.status(404).json();
+    }
+};
+
+export const delteProduct = async (req: Request, res: Response) => {
+    req.logger = req.logger.child({ service: 'products', serviceHandler: 'delteProduct' });
+    req.logger.info({ status: 'start' });
+
+    try {
+        const { idProduct } = req.params
+
+        if(!idProduct){
+            const response = { status: 'No id Product provided' };
+            req.logger.warn(response);
+            return res.status(400).json(response);
+        }
+
+        await deleteProductUtil(idProduct)
 
         return res.status(200).json();
     } catch (error) {

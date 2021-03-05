@@ -10,6 +10,7 @@ import { getOnlyPacientUtil, getPacientUtil } from '../../utils/pacients';
 import randomcolor from 'randomcolor';
 import { EdadMeses } from '../../helper/edad-vacunas';
 import { VacunasPacient } from '../../models/vacunas';
+import { getProductUtil, updateProductUtil } from '../../utils/products';
 
 export const createVacunaPacient = async (req: Request, res: Response) => {
     req.logger = req.logger.child({ service: 'vacunas', serviceHandler: 'createVacunaPacient' });
@@ -21,6 +22,17 @@ export const createVacunaPacient = async (req: Request, res: Response) => {
 
         if(!id_vacuna || !idPacient || !idProducts){
             const response = { status: 'No id_vacuna or id Pacient provided' };
+            req.logger.warn(response);
+            return res.status(400).json(response);
+        }
+
+        const product = await getProductUtil(idProducts)
+        const newStock = product[0].stock - 1
+
+        if(newStock >= 0){
+            await updateProductUtil(idProducts, newStock)
+        }else{
+            const response = { status: 'No suficient stock provided' };
             req.logger.warn(response);
             return res.status(400).json(response);
         }

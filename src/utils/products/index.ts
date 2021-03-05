@@ -29,6 +29,20 @@ export const getProductNameUtil = async (name: string) => {
     }
 }
 
+export const getProductUtil = async (idProducts: string) => {
+  try {
+      return await new Promise((resolve, reject) => {
+          dataBase.query(
+            `SELECT * FROM products WHERE idProducts = '${idProducts}';`,
+            (err, data) => err ? reject(err) : resolve(data)
+          );
+        }) as Products[];
+  } catch (error) {
+      console.log(error.message);
+      return [];
+  }
+}
+
 export const getProductsUtil = async () => {
     try {
         return await new Promise((resolve, reject) => {
@@ -55,5 +69,33 @@ export const getProductsByTipoPacientUtil = async (tipoPacient: string) => {
   } catch (error) {
       console.log(error.message);
       return [];
+  }
+}
+
+export const updateProductUtil = async (idProducts: string, stock: number) => {
+  try {
+      return await new Promise((resolve, reject) => {
+          dataBase.query(
+            `UPDATE products SET stock = ${stock} WHERE idProducts = '${idProducts}';`,
+            (err, data) => err ? reject(err) : resolve(data)
+          );
+        });
+  } catch (error) {
+      console.log(error.message);
+      return false;
+  }
+}
+
+export const deleteProductUtil = async (idProducts: string) => {
+  try {
+      return await new Promise((resolve, reject) => {
+          dataBase.query(
+            `DELETE FROM products WHERE idProducts = '${idProducts}';`,
+            (err, data) => err ? reject(err) : resolve(data)
+          );
+        });
+  } catch (error) {
+      console.log(error.message);
+      return false;
   }
 }
