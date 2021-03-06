@@ -7,4 +7,5 @@ export interface User {
     avatar: string | null;
     provider: string;
     Phone: number | null;
+    Cedula: number | null;
 }

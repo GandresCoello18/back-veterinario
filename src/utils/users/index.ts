@@ -19,7 +19,7 @@ export const getUserUtil = async (option: {
 
       let user: User[] = [];
       let sql: string;
-      const response_campo = 'idUser, userName, email, created_at, isAdmin, avatar, provider, Phone';
+      const response_campo = 'idUser, userName, email, created_at, isAdmin, avatar, provider, Phone, cedula';
 
       if(option.idUser) {
         sql = `SELECT ${response_campo} FROM users WHERE idUser = '${option.idUser}';`;
@@ -52,7 +52,7 @@ export const createUserUtil = async (user: User) => {
     try {
         return await new Promise((resolve, reject) => {
             dataBase.query(
-              `INSERT INTO users (idUser, userName, email, created_at, isAdmin, avatar, provider, Phone) VALUES ('${user.idUser}', '${user.userName}', '${user.email}', '${user.created_at}', ${user.isAdmin}, ${user.avatar ? `'${user.avatar}'` : null}, '${user.provider}', ${user.Phone ? user.Phone : null});`,
+              `INSERT INTO users (idUser, userName, email, created_at, isAdmin, avatar, provider, Phone, cedula) VALUES ('${user.idUser}', '${user.userName}', '${user.email}', '${user.created_at}', ${user.isAdmin}, ${user.avatar ? `'${user.avatar}'` : null}, '${user.provider}', ${user.Phone ? user.Phone : null}, ${user.Cedula ? `'${user.Cedula}'` : null});`,
               (err, data) => err ? reject(err) : resolve(data)
             );
           });
@@ -62,11 +62,11 @@ export const createUserUtil = async (user: User) => {
     }
 }
 
-export const updateUserUtil = async (userName: string, email: string, Phone: number, idUser: string) => {
+export const updateUserUtil = async (userName: string, email: string, Phone: number, idUser: string, Cedula: string) => {
   try {
       return await new Promise((resolve, reject) => {
           dataBase.query(
-            `UPDATE users SET userName = '${userName}', email = '${email}', Phone = ${Phone} WHERE idUser = '${idUser}';`,
+            `UPDATE users SET userName = '${userName}', email = '${email}', Phone = ${Phone}, cedula = ${Cedula} WHERE idUser = '${idUser}';`,
             (err, data) => err ? reject(err) : resolve(data)
           );
         });

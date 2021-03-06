@@ -72,7 +72,8 @@ export const login = async (req: Request, res: Response) => {
           isAdmin: false,
           avatar,
           provider,
-          Phone: null
+          Phone: null,
+          Cedula: null,
         }
 
         await createUserUtil(saveUser);
@@ -109,16 +110,16 @@ export const updateUser = async (req: Request, res: Response) => {
   req.logger.info({ status: 'start' });
 
   try {
-    const {userName, email, Phone} = req.body
+    const {userName, email, Phone, Cedula} = req.body
     const user = req.user
   
-    if(!email || !userName || !Phone){
+    if(!email || !userName || !Phone || !Cedula){
       const response = { status: 'No data user provided' };
       req.logger.warn(response);
       return res.status(400).json(response);
     }
 
-    await updateUserUtil(userName, email, Phone, user.idUser)
+    await updateUserUtil(userName, email, Phone, user.idUser, Cedula)
 
     return res.status(200).json();
   } catch (error) {
@@ -132,9 +133,9 @@ export const newUser = async (req: Request, res: Response) => {
   req.logger.info({ status: 'start' });
 
   try {
-    const {userName, email, admin, Phone} = req.body
+    const {userName, email, admin, Phone, Cedula} = req.body
   
-    if(!email || !userName){
+    if(!email || !userName || !Cedula){
       const response = { status: 'No data user provided' };
       req.logger.warn(response);
       return res.status(400).json(response);
@@ -157,6 +158,7 @@ export const newUser = async (req: Request, res: Response) => {
       avatar: null,
       provider: 'veterinario',
       Phone: Phone || null,
+      Cedula,
     }
 
     await createUserUtil(saveUser);
