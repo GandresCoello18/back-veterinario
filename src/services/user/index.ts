@@ -1,11 +1,12 @@
 import express from 'express';
 import { auth } from '../../middlewares/auth';
 
-import { getUser, login, newUser, getUsers, updateUser, deleteUser } from './controller';
+import { getUserByPacient, getUser, login, newUser, getUsers, updateUser, deleteUser } from './controller';
 
 const router = express.Router();
 const baseURL = '/users';
 
+router.get(`${baseURL}/byPacient/:idPacient`, auth, getUserByPacient);
 router.get(`${baseURL}/me`, auth, getUser);
 router.get(`${baseURL}/`, auth, getUsers);
 router.post(`${baseURL}/`, auth, newUser);

@@ -5,7 +5,7 @@ import { User } from '../../models/users';
 import jwt from "jsonwebtoken";
 import {config, createUserUtil, dataBase, DeleteUserUtil, getUserUtil, updateUserUtil} from '../../utils';
 import { v4 as uuidv4 } from 'uuid';
-import { ExistPacientByUserUtil } from '../../utils/pacients';
+import { ExistPacientByUserUtil, getOnlyPacientUtil } from '../../utils/pacients';
 
 export const getUser = async (req: Request, res: Response) => {
     req.logger = req.logger.child({ service: 'users', serviceHandler: 'getUser' });
@@ -19,6 +19,33 @@ export const getUser = async (req: Request, res: Response) => {
       req.logger.error({ status: 'error', code: 500 });
       return res.status(404).json();
     }
+};
+
+export const getUserByPacient = async (req: Request, res: Response) => {
+  req.logger = req.logger.child({ service: 'users', serviceHandler: 'getUserByPacient' });
+  req.logger.info({ status: 'start' });
+
+  try {
+    const { idPacient } = req.params
+
+    if(!idPacient){
+      const response = { status: 'No data id Pacient provided' };
+      req.logger.warn(response);
+      return res.status(400).json(response);
+    }
+
+    const pacient = await getOnlyPacientUtil(idPacient)
+    let user: User[] = []
+
+    if(pacient.length && pacient[0].emailPerson){
+      user = await getUserUtil({email: pacient[0].emailPerson})
+    }
+
+    return res.status(200).json({ user: user[0] });
+  } catch (error) {
+    req.logger.error({ status: 'error', code: 500 });
+    return res.status(404).json();
+  }
 };
 
 export const getUsers = async (req: Request, res: Response) => {
