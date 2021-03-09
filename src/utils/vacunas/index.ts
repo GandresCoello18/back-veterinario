@@ -43,6 +43,20 @@ export const getVacunasPacientUtil = async (idVacuna: string, idPacient: string)
   }
 }
 
+export const getVacunasHistoryPacientUtil = async (idPacient: string) => {
+  try {
+      return await new Promise((resolve, reject) => {
+          dataBase.query(
+            `SELECT vacunas_pacient.id_vacunas_pacient, vacunas_pacient.created_at, products.name, vacunas.nombres FROM vacunas_pacient INNER JOIN products ON products.idProducts = vacunas_pacient.idProducts INNER JOIN vacunas ON vacunas.id_vacuna = vacunas_pacient.id_vacuna WHERE vacunas_pacient.idPacient = '${idPacient}' ORDER BY vacunas_pacient.created_at DESC;`,
+            (err, data) => err ? reject(err) : resolve(data)
+          );
+        }) as MisVacunasPacient[];
+  } catch (error) {
+      console.log(error.message);
+      return [];
+  }
+}
+
 export const CreateVacunasPacientUtil = async (VP: VacunasPacient) => {
   try {
       return await new Promise((resolve, reject) => {

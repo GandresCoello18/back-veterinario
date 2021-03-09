@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import { Request, Response } from 'express';
 import Locale from 'date-fns/locale/es'
 import { v4 as uuidv4 } from 'uuid';
-import { CreateVacunasPacientUtil, DeleteVacunasPacientUtil, getNameVacunasUtil, getVacunasPacientUtil, getVacunasUtil } from '../../utils/vacunas';
+import { CreateVacunasPacientUtil, DeleteVacunasPacientUtil, getNameVacunasUtil, getVacunasHistoryPacientUtil, getVacunasPacientUtil, getVacunasUtil } from '../../utils/vacunas';
 import { getOnlyPacientUtil, getPacientUtil } from '../../utils/pacients';
 import randomcolor from 'randomcolor';
 import { EdadMeses } from '../../helper/edad-vacunas';
@@ -142,6 +142,28 @@ export const getMiCalendario = async (req: Request, res: Response) => {
         )
 
         return res.status(200).json({ calendario: MiCalendar });
+    } catch (error) {
+        req.logger.error({ status: 'error', code: 500 });
+        return res.status(404).json();
+    }
+};
+
+export const getMisVacunasByHistory = async (req: Request, res: Response) => {
+    req.logger = req.logger.child({ service: 'vacunas', serviceHandler: 'getMisVacunasByHistory' });
+    req.logger.info({ status: 'start' });
+
+    try {
+        const { idPacient } = req.params
+
+        if(!idPacient){
+            const response = { status: 'No id Pacient provided' };
+            req.logger.warn(response);
+            return res.status(400).json(response);
+        }
+
+        const HistoriVacunas = await getVacunasHistoryPacientUtil(idPacient);
+
+        return res.status(200).json({ HistoriVacunas });
     } catch (error) {
         req.logger.error({ status: 'error', code: 500 });
         return res.status(404).json();
