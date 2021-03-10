@@ -8,6 +8,7 @@ import User from './services/user';
 import Pacient from './services/pacient';
 import Product from './services/product';
 import Vacunas from './services/vacunas';
+import Seguimiento from './services/seguimiento';
 
 export function init() {
   const app = express();
@@ -42,6 +43,7 @@ export function init() {
     Pacient,
     Product,
     Vacunas,
+    Seguimiento,
   ]);
 
   return { app };
