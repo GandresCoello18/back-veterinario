@@ -5,7 +5,7 @@ import { User } from '../../models/users';
 import jwt from "jsonwebtoken";
 import {config, createUserUtil, dataBase, DeleteUserUtil, getUserUtil, updateUserUtil} from '../../utils';
 import { v4 as uuidv4 } from 'uuid';
-import { ExistPacientByUserUtil, getOnlyPacientUtil } from '../../utils/pacients';
+import { DeletePacientByUserUtil, ExistPacientByUserUtil, getOnlyPacientUtil } from '../../utils/pacients';
 
 export const getUser = async (req: Request, res: Response) => {
     req.logger = req.logger.child({ service: 'users', serviceHandler: 'getUser' });
@@ -211,10 +211,11 @@ export const deleteUser = async (req: Request, res: Response) => {
       return res.status(400).json(response);
     }
 
+    const user = await getUserUtil({idUser});
+    await DeletePacientByUserUtil(user[0].email);
     await DeleteUserUtil(idUser);
 
     return res.status(200).json();
-
   } catch (error) {
     req.logger.error({ status: 'error', code: 500 });
     return res.status(404).json();

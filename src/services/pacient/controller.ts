@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Pacient } from '../../models/pacient';
 import { createPacientUtil, DeletePacientUtil, ExistPacientUtil, getOnlyPacientUtil, getPacientByUserUtil, getPacientUtil } from '../../utils/pacients';
+import { getUserUtil } from '../../utils/users';
 
 export const getPacients = async (req: Request, res: Response) => {
     req.logger = req.logger.child({ service: 'pacient', serviceHandler: 'getPacients' });
@@ -73,6 +74,15 @@ export const newPacients = async (req: Request, res: Response) => {
             sexo,
             raza,
             nacimiento,
+        }
+
+
+        const userExist = await getUserUtil({email: emailPerson});
+
+        if(userExist.length === 0){
+            const response = { status: `No existe cliente con: ${emailPerson}` };
+            req.logger.warn(response);
+            return res.status(400).json(response);
         }
 
         if(nombre && emailPerson){
