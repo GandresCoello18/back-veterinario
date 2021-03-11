@@ -55,7 +55,7 @@ export const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await new Promise((resolve, reject) => {
       dataBase.query(
-        `SELECT * FROM users ORDER BY userName DESC LIMIT 15;`,
+        `SELECT * FROM users ORDER BY userName DESC;`,
         (err, data) => err ? reject(err) : resolve(data)
       );
     }) as User[];
@@ -204,7 +204,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 
   try {
     const {idUser} = req.params
-  
+
     if(!idUser){
       const response = { status: 'No data idUser for user delete' };
       req.logger.warn(response);

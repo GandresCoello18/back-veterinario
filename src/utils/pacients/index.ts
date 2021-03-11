@@ -99,6 +99,20 @@ export const DeletePacientUtil = async (idPaciente: string) => {
   }
 }
 
+export const UpdateEmailPacientUtil = async (idPaciente: string, emailPerson: string) => {
+  try {
+      return await new Promise((resolve, reject) => {
+          dataBase.query(
+            `UPDATE pacients SET emailPerson = '${emailPerson}' WHERE idPacient = '${idPaciente}';`,
+            (err, data) => err ? reject(err) : resolve(data)
+          );
+        });
+  } catch (error) {
+      console.log(error.message);
+      return false;
+  }
+}
+
 export const DeletePacientByUserUtil = async (emailPerson: string) => {
   try {
       return await new Promise((resolve, reject) => {

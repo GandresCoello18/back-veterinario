@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Pacient } from '../../models/pacient';
-import { createPacientUtil, DeletePacientUtil, ExistPacientUtil, getOnlyPacientUtil, getPacientByUserUtil, getPacientUtil } from '../../utils/pacients';
+import { createPacientUtil, DeletePacientUtil, ExistPacientUtil, getOnlyPacientUtil, getPacientByUserUtil, getPacientUtil, UpdateEmailPacientUtil } from '../../utils/pacients';
 import { getUserUtil } from '../../utils/users';
 
 export const getPacients = async (req: Request, res: Response) => {
@@ -96,6 +96,29 @@ export const newPacients = async (req: Request, res: Response) => {
         }
 
         await createPacientUtil(pacient)
+
+        return res.status(200).json();
+    } catch (error) {
+        req.logger.error({ status: 'error', code: 500 });
+        return res.status(404).json();
+    }
+};
+
+export const changeDueno = async (req: Request, res: Response) => {
+    req.logger = req.logger.child({ service: 'pacient', serviceHandler: 'changeDueno' });
+    req.logger.info({ status: 'start' });
+
+    try {
+        const { idPacient } = req.params
+        const { emailPerson } = req.body
+
+        if(!idPacient || !emailPerson){
+            const response = { status: 'No data id pacient or emailPerson provided' };
+            req.logger.warn(response);
+            return res.status(400).json(response);
+        }
+
+        await UpdateEmailPacientUtil(idPacient, emailPerson);
 
         return res.status(200).json();
     } catch (error) {
