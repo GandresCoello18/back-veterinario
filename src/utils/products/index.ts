@@ -57,7 +57,6 @@ export const getProductsUtil = async () => {
     }
 }
 
-
 export const getProductsByTipoPacientUtil = async (tipoPacient: string) => {
   try {
       return await new Promise((resolve, reject) => {

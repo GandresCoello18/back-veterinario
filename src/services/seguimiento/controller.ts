@@ -2,6 +2,7 @@ import { format } from 'date-fns';
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Seguimiento } from '../../models/seguimiento';
+import { getProductNameUtil, updateProductUtil } from '../../utils/products';
 import { createSeguimientoUtil, deleteSeguimientoUtil, getMisSeguimientoUtil } from '../../utils/seguimiento';
 
 export const createSeguimiento = async (req: Request, res: Response) => {
@@ -9,7 +10,7 @@ export const createSeguimiento = async (req: Request, res: Response) => {
     req.logger.info({ status: 'start' });
 
     try {
-        const { category, title, idPacient } = req.body
+        const { category, title, idPacient, producto } = req.body
 
         if(!category || !title || !idPacient){
             const response = { status: 'No data tipo Pacient provided' };
@@ -34,6 +35,20 @@ export const createSeguimiento = async (req: Request, res: Response) => {
         }
 
         await createSeguimientoUtil(seguimiento);
+
+        if(producto){
+            const thisProducto = await getProductNameUtil(producto);
+
+            const newStock = thisProducto[0].stock - 1
+
+            if(newStock >= 0){
+                await updateProductUtil(thisProducto[0].idProducts, newStock)
+            }else{
+                const response = { status: 'No suficient stock provided' };
+                req.logger.warn(response);
+                return res.status(400).json(response);
+            }
+        }
 
         return res.status(200).json();
     } catch (error) {

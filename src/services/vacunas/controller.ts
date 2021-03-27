@@ -76,6 +76,7 @@ export const getMisVacunas = async (req: Request, res: Response) => {
 
                 const misVacunas = await getVacunasPacientUtil(vacuna.id_vacuna, idPacient);
                 const pacient = await getOnlyPacientUtil(idPacient);
+                const calculEdad = EdadMeses(pacient[0].nacimiento, vacuna.edad);
 
                 const ObjVacuna = {
                     created_at: '',
@@ -86,7 +87,7 @@ export const getMisVacunas = async (req: Request, res: Response) => {
                     avatar: pacient[0].avatar,
                     id_vacunas: vacuna.id_vacuna,
                     nombre: vacuna.nombres,
-                    edad: vacuna.edad,
+                    edad: format(new Date(calculEdad.to), 'yyyy-MM-dd'),
                     count: vacuna.count,
                     isVacuna: 'Pendiente',
                 }
