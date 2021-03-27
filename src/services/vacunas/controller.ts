@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prefer-spread */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -5,7 +6,7 @@ import { format } from 'date-fns';
 import { Request, Response } from 'express';
 import Locale from 'date-fns/locale/es'
 import { v4 as uuidv4 } from 'uuid';
-import { CreateVacunasPacientUtil, DeleteVacunasPacientUtil, getNameVacunasUtil, getVacunasHistoryPacientUtil, getVacunasPacientUtil, getVacunasUtil } from '../../utils/vacunas';
+import { CreateVacunasPacientUtil, DeleteVacunasPacientUtil, getNameVacunasUtil, getVacunasHistoryPacientUtil, getVacunasPacientUtil, getVacunasUtil, UpdateDateVacunasPaciUtil } from '../../utils/vacunas';
 import { getOnlyPacientUtil, getPacientUtil } from '../../utils/pacients';
 import randomcolor from 'randomcolor';
 import { EdadMeses } from '../../helper/edad-vacunas';
@@ -224,6 +225,29 @@ export const getNameVacunas = async (req: Request, res: Response) => {
         const vacunas = await getNameVacunasUtil(pacient[0].tipo, pacient[0].idPacient);
 
         return res.status(200).json({ vacunas });
+    } catch (error) {
+        req.logger.error({ status: 'error', code: 500 });
+        return res.status(404).json();
+    }
+};
+
+export const updateDateVacuna = async (req: Request, res: Response) => {
+    req.logger = req.logger.child({ service: 'vacunas', serviceHandler: 'updateDateVacuna' });
+    req.logger.info({ status: 'start' });
+
+    try {
+        const { id_vacunas_pacient } = req.params
+        const { date } = req.body
+
+        if(!id_vacunas_pacient || !date){
+            const response = { status: 'No id Pacient or date provided' };
+            req.logger.warn(response);
+            return res.status(400).json(response);
+        }
+
+        await UpdateDateVacunasPaciUtil(id_vacunas_pacient, date);
+
+        return res.status(200).json();
     } catch (error) {
         req.logger.error({ status: 'error', code: 500 });
         return res.status(404).json();

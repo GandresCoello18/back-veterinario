@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Seguimiento } from '../../models/seguimiento';
-import { createSeguimientoUtil, deleteSeguimientoUtil, getMisSeguimientoUtil, getSeguimientoByDateUtil } from '../../utils/seguimiento';
+import { createSeguimientoUtil, deleteSeguimientoUtil, getMisSeguimientoUtil } from '../../utils/seguimiento';
 
 export const createSeguimiento = async (req: Request, res: Response) => {
     req.logger = req.logger.child({ service: 'products', serviceHandler: 'createSeguimiento' });
@@ -17,13 +17,13 @@ export const createSeguimiento = async (req: Request, res: Response) => {
             return res.status(400).json(response);
         }
 
-        const seguimientoDate = await getSeguimientoByDateUtil(idPacient, category, format(new Date(), 'yyyy-MM-dd'))
+        /* const seguimientoDate = await getSeguimientoByDateUtil(idPacient, category, format(new Date(), 'yyyy-MM-dd'))
 
         if(seguimientoDate.length){
             const response = { status: `El seguimiento de la fecha: ${format(new Date(), 'yyyy-MM-dd')} y categorya: ${category}, ya fueron registrados` };
             req.logger.warn(response);
             return res.status(400).json(response);
-        }
+        } */
 
         const seguimiento: Seguimiento = {
             id_seguimiento: uuidv4(),

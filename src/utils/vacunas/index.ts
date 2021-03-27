@@ -57,6 +57,20 @@ export const getVacunasHistoryPacientUtil = async (idPacient: string) => {
   }
 }
 
+export const UpdateDateVacunasPaciUtil = async (id_vacunas_pacient: string, date: string) => {
+  try {
+      return await new Promise((resolve, reject) => {
+          dataBase.query(
+            `UPDATE vacunas_pacient SET created_at = '${date}' WHERE id_vacunas_pacient = '${id_vacunas_pacient}';`,
+            (err, data) => err ? reject(err) : resolve(data)
+          );
+        });
+  } catch (error) {
+      console.log(error.message);
+      return false;
+  }
+}
+
 export const CreateVacunasPacientUtil = async (VP: VacunasPacient) => {
   try {
       return await new Promise((resolve, reject) => {
