@@ -9,6 +9,7 @@ import Pacient from './services/pacient';
 import Product from './services/product';
 import Vacunas from './services/vacunas';
 import Seguimiento from './services/seguimiento';
+import Citas from './services/cita';
 
 export function init() {
   const app = express();
@@ -44,6 +45,7 @@ export function init() {
     Product,
     Vacunas,
     Seguimiento,
+    Citas,
   ]);
 
   return { app };
