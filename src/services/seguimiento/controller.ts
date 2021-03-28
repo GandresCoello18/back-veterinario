@@ -6,7 +6,7 @@ import { Seguimiento } from '../../models/seguimiento';
 import { SendEmail } from '../../utils/email';
 import { getOnlyPacientUtil } from '../../utils/pacients';
 import { getProductNameUtil, updateProductUtil } from '../../utils/products';
-import { createSeguimientoUtil, deleteSeguimientoUtil, getMisSeguimientoUtil } from '../../utils/seguimiento';
+import { createSeguimientoUtil, deleteSeguimientoUtil, getMisSeguimientoUtil, updateSeguimientoUtil } from '../../utils/seguimiento';
 
 export const createSeguimiento = async (req: Request, res: Response) => {
     req.logger = req.logger.child({ service: 'products', serviceHandler: 'createSeguimiento' });
@@ -89,6 +89,29 @@ export const getMisSeguimiento = async (req: Request, res: Response) => {
         const MisSeguimientos = await getMisSeguimientoUtil(idPacient);
 
         return res.status(200).json({ MisSeguimientos });
+    } catch (error) {
+        req.logger.error({ status: 'error', code: 500 });
+        return res.status(500).json();
+    }
+};
+
+export const UpdateSeguimiento = async (req: Request, res: Response) => {
+    req.logger = req.logger.child({ service: 'products', serviceHandler: 'UpdateSeguimiento' });
+    req.logger.info({ status: 'start' });
+
+    try {
+        const { idSeguimiento } = req.params
+        const { title } = req.body
+
+        if(!idSeguimiento || !title){
+            const response = { status: 'No data tipo Pacient or title provided' };
+            req.logger.warn(response);
+            return res.status(400).json(response);
+        }
+
+        await updateSeguimientoUtil(idSeguimiento, title);
+
+        return res.status(200).json();
     } catch (error) {
         req.logger.error({ status: 'error', code: 500 });
         return res.status(500).json();

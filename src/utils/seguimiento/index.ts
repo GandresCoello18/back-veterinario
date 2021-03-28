@@ -43,6 +43,20 @@ export const getSeguimientoByDateUtil = async (idPacient: string, category: stri
   }
 }
 
+export const updateSeguimientoUtil = async (id_seguimiento: string, title: string) => {
+  try {
+      return await new Promise((resolve, reject) => {
+          dataBase.query(
+            `UPDATE seguimiento SET title = '${title}' WHERE id_seguimiento = '${id_seguimiento}';`,
+            (err, data) => err ? reject(err) : resolve(data)
+          );
+        });
+  } catch (error) {
+      console.log(error.message);
+      return false;
+  }
+}
+
 export const deleteSeguimientoUtil = async (id_seguimiento: string) => {
   try {
       return await new Promise((resolve, reject) => {
