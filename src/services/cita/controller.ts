@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import randomcolor from 'randomcolor';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateCita } from '../../models/cita';
-import { CreateCitaUtil, GetMisCitasUtil, UpdateAsistirCitaUtil } from '../../utils/cita';
+import { CreateCitaUtil, DeleteCitaUtil, GetMisCitasUtil, UpdateAsistirCitaUtil } from '../../utils/cita';
 
 export const NewCita = async (req: Request, res: Response) => {
     req.logger = req.logger.child({ service: 'citas', serviceHandler: 'NewCita' });
@@ -122,6 +122,28 @@ export const UpdateAsistirCita = async (req: Request, res: Response) => {
         }
 
         await UpdateAsistirCitaUtil(idSolicitud, user.idUser, status);
+
+        return res.status(200).json();
+    } catch (error) {
+        req.logger.error({ status: 'error', code: 500 });
+        return res.status(404).json();
+    }
+};
+
+export const DeleteCita = async (req: Request, res: Response) => {
+    req.logger = req.logger.child({ service: 'citas', serviceHandler: 'DeleteCita' });
+    req.logger.info({ status: 'start' });
+
+    try {
+        const { idSolicitud } = req.params
+
+        if(!idSolicitud){
+            const response = { status: 'No id Solicitud or status provided' };
+            req.logger.warn(response);
+            return res.status(400).json(response);
+        }
+
+        await DeleteCitaUtil(idSolicitud);
 
         return res.status(200).json();
     } catch (error) {
