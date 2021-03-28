@@ -29,6 +29,20 @@ export const GetMisCitasUtil = async (idCliente?: string) => {
   }
 }
 
+export const GeCitaUtil = async (idSolicitud?: string) => {
+  try {
+      return await new Promise((resolve, reject) => {
+          dataBase.query(
+            `SELECT * FROM solicitudes WHERE idSolicitud = '${idSolicitud}';`,
+            (err, data) => err ? reject(err) : resolve(data)
+          );
+        }) as CreateCita[];
+  } catch (error) {
+      console.log(error.message);
+      return [];
+  }
+}
+
 export const ExcistCitasUtil = async (solicitado: string, hora: number) => {
   try {
       return await new Promise((resolve, reject) => {

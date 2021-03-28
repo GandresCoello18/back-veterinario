@@ -1,7 +1,10 @@
 import { format } from 'date-fns';
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import { Email } from '../../models/email';
 import { Seguimiento } from '../../models/seguimiento';
+import { SendEmail } from '../../utils/email';
+import { getOnlyPacientUtil } from '../../utils/pacients';
 import { getProductNameUtil, updateProductUtil } from '../../utils/products';
 import { createSeguimientoUtil, deleteSeguimientoUtil, getMisSeguimientoUtil } from '../../utils/seguimiento';
 
@@ -48,6 +51,19 @@ export const createSeguimiento = async (req: Request, res: Response) => {
                 req.logger.warn(response);
                 return res.status(400).json(response);
             }
+        }
+
+        const pacient = await getOnlyPacientUtil(idPacient);
+
+        if(pacient[0].emailPerson){
+            const email: Email = {
+                from: pacient[0].emailPerson,
+                to: pacient[0].emailPerson,
+                subject: 'Registro de seguimiento',
+                text:`El veterinario: <strong>${req.user.userName}</strong> acaba de registrar un seguimiento del paciente: <strong>${pacient[0].nombre}</strong>, en la categoria: <strong>${category}</strong> y registrando: <strong>${title}</strong>`,
+            }
+
+            await SendEmail(email);
         }
 
         return res.status(200).json();

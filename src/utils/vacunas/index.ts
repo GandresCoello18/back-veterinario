@@ -15,6 +15,21 @@ export const getVacunasUtil = async (tipoPacient: string) => {
     }
 }
 
+export const getVacunaUtil = async (idVacuna: string) => {
+  try {
+      return await new Promise((resolve, reject) => {
+          dataBase.query(
+            `SELECT * FROM vacunas WHERE id_vacuna = '${idVacuna}'`,
+            (err, data) => err ? reject(err) : resolve(data)
+          );
+        }) as Vacunas[];
+  } catch (error) {
+      console.log(error.message);
+      return [];
+  }
+}
+
+
 export const getNameVacunasUtil = async (tipoPacient: string, idPacient: string) => {
   try {
       return await new Promise((resolve, reject) => {

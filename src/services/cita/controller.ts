@@ -3,7 +3,10 @@ import { Request, Response } from 'express';
 import randomcolor from 'randomcolor';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateCita } from '../../models/cita';
-import { CreateCitaUtil, DeleteCitaUtil, GetMisCitasUtil, UpdateAsistirCitaUtil } from '../../utils/cita';
+import { Email } from '../../models/email';
+import { CreateCitaUtil, DeleteCitaUtil, GeCitaUtil, GetMisCitasUtil, UpdateAsistirCitaUtil } from '../../utils/cita';
+import { SendEmail } from '../../utils/email';
+import { getOnlyPacientUtil } from '../../utils/pacients';
 
 export const NewCita = async (req: Request, res: Response) => {
     req.logger = req.logger.child({ service: 'citas', serviceHandler: 'NewCita' });
@@ -122,6 +125,20 @@ export const UpdateAsistirCita = async (req: Request, res: Response) => {
         }
 
         await UpdateAsistirCitaUtil(idSolicitud, user.idUser, status);
+        const solicitud = await GeCitaUtil(idSolicitud);
+
+        const pacient = await getOnlyPacientUtil(solicitud[0].idPacient);
+
+        if(pacient[0].emailPerson){
+            const email: Email = {
+                from: pacient[0].emailPerson,
+                to: pacient[0].emailPerson,
+                subject: 'Respuesta de petición',
+                text:`El veterinario: <strong>${req.user.userName}</strong> acaba de actualizar la respuesta de la peticion a: <strong>${status}</strong>, para el paciente: <strong>${pacient[0].nombre}</strong>`,
+            }
+
+            await SendEmail(email);
+        }
 
         return res.status(200).json();
     } catch (error) {

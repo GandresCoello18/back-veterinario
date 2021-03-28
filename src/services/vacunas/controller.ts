@@ -6,12 +6,14 @@ import { format } from 'date-fns';
 import { Request, Response } from 'express';
 import Locale from 'date-fns/locale/es'
 import { v4 as uuidv4 } from 'uuid';
-import { CreateVacunasPacientUtil, DeleteVacunasPacientUtil, getNameVacunasUtil, getVacunasHistoryPacientUtil, getVacunasPacientUtil, getVacunasUtil, UpdateDateVacunasPaciUtil } from '../../utils/vacunas';
+import { CreateVacunasPacientUtil, DeleteVacunasPacientUtil, getNameVacunasUtil, getVacunasHistoryPacientUtil, getVacunasPacientUtil, getVacunasUtil, getVacunaUtil, UpdateDateVacunasPaciUtil } from '../../utils/vacunas';
 import { getOnlyPacientUtil, getPacientUtil } from '../../utils/pacients';
 import randomcolor from 'randomcolor';
 import { EdadMeses } from '../../helper/edad-vacunas';
 import { VacunasPacient } from '../../models/vacunas';
 import { getProductUtil, updateProductUtil } from '../../utils/products';
+import { Email } from '../../models/email';
+import { SendEmail } from '../../utils/email';
 
 export const createVacunaPacient = async (req: Request, res: Response) => {
     req.logger = req.logger.child({ service: 'vacunas', serviceHandler: 'createVacunaPacient' });
@@ -48,6 +50,20 @@ export const createVacunaPacient = async (req: Request, res: Response) => {
         }
 
         await CreateVacunasPacientUtil(VP);
+
+        const pacient = await getOnlyPacientUtil(idPacient);
+        const vacuna = await getVacunaUtil(id_vacuna);
+
+        if(pacient[0].emailPerson){
+            const email: Email = {
+                from: pacient[0].emailPerson,
+                to: pacient[0].emailPerson,
+                subject: 'Registro de vacuna',
+                text:`El veterinario: <strong>${req.user.userName}</strong> acaba de registrar la vacunación del paciente: <strong>${pacient[0].nombre}</strong>, haciendo uso de la vacuna: <strong>${vacuna[0].nombres}</strong>`,
+            }
+
+            await SendEmail(email);
+        }
 
         return res.status(200).json();
     } catch (error) {
@@ -90,6 +106,10 @@ export const getMisVacunas = async (req: Request, res: Response) => {
                     edad: format(new Date(calculEdad.to), 'yyyy-MM-dd'),
                     count: vacuna.count,
                     isVacuna: 'Pendiente',
+                }
+
+                if(new Date() > new Date(ObjVacuna.edad)){
+                    ObjVacuna.isVacuna = 'Atrasado';
                 }
 
                 if(misVacunas.length){

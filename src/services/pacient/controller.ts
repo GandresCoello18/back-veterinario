@@ -1,7 +1,9 @@
 import { format } from 'date-fns';
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import { Email } from '../../models/email';
 import { Pacient } from '../../models/pacient';
+import { SendEmail } from '../../utils/email';
 import { createPacientUtil, DeletePacientUtil, ExistPacientUtil, getOnlyPacientUtil, getPacientByUserUtil, getPacientUtil, UpdateEmailPacientUtil } from '../../utils/pacients';
 import { getUserUtil } from '../../utils/users';
 
@@ -76,7 +78,6 @@ export const newPacients = async (req: Request, res: Response) => {
             nacimiento,
         }
 
-
         const userExist = await getUserUtil({email: emailPerson});
 
         if(userExist.length === 0){
@@ -116,6 +117,19 @@ export const changeDueno = async (req: Request, res: Response) => {
             const response = { status: 'No data id pacient or emailPerson provided' };
             req.logger.warn(response);
             return res.status(400).json(response);
+        }
+
+        const pacient = await getOnlyPacientUtil(idPacient);
+
+        if(pacient[0].emailPerson){
+            const email: Email = {
+                from: pacient[0].emailPerson,
+                to: pacient[0].emailPerson,
+                subject: 'Cambio de dueño',
+                text:`El veterinario: <strong>${req.user.userName}</strong> acaba de registrar un cambio de dueño para el paciente: <strong>${pacient[0].nombre}</strong>, dirigido para: <strong>${emailPerson}</strong>`,
+            }
+
+            await SendEmail(email);
         }
 
         await UpdateEmailPacientUtil(idPacient, emailPerson);
