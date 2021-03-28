@@ -13,6 +13,8 @@ export const config = envalid.cleanEnv(
     DB_PORT: num(),
     JWT_SECRET: str(),
     PORT: num(),
+    CORREO_GMAIL: str(),
+    CLAVE_GMAIL: str(),
   },
   { strict: true, dotEnvPath: path.resolve(__dirname, '../../.env') },
 );
