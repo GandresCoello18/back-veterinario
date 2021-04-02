@@ -132,21 +132,44 @@ export const login = async (req: Request, res: Response) => {
   }
 }
 
-export const updateUser = async (req: Request, res: Response) => {
-  req.logger = req.logger.child({ service: 'users', serviceHandler: 'updateUser' });
+export const updateMe = async (req: Request, res: Response) => {
+  req.logger = req.logger.child({ service: 'users', serviceHandler: 'updateMe' });
   req.logger.info({ status: 'start' });
 
   try {
-    const {userName, email, Phone, Cedula} = req.body
+    const {userName, email, Phone, cedula} = req.body
     const user = req.user
   
-    if(!email || !userName || !Phone || !Cedula){
+    if(!email || !userName || !Phone || !cedula){
       const response = { status: 'No data user provided' };
       req.logger.warn(response);
       return res.status(400).json(response);
     }
 
-    await updateUserUtil(userName, email, Phone, user.idUser, Cedula)
+    await updateUserUtil(userName, email, Phone, user.idUser, cedula)
+
+    return res.status(200).json();
+  } catch (error) {
+    req.logger.error({ status: 'error', code: 500 });
+    return res.status(404).json();
+  }
+}
+
+export const updateUser = async (req: Request, res: Response) => {
+  req.logger = req.logger.child({ service: 'users', serviceHandler: 'updateUser' });
+  req.logger.info({ status: 'start' });
+
+  try {
+    const {userName, email, Phone, cedula} = req.body
+    const { idUser } = req.params
+  
+    if(!email || !userName|| !idUser){
+      const response = { status: 'No data user provided' };
+      req.logger.warn(response);
+      return res.status(400).json(response);
+    }
+
+    await updateUserUtil(userName, email, Phone, idUser, cedula)
 
     return res.status(200).json();
   } catch (error) {

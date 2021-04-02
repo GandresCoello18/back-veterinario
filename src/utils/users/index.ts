@@ -62,7 +62,7 @@ export const createUserUtil = async (user: User) => {
     }
 }
 
-export const updateUserUtil = async (userName: string, email: string, Phone: number, idUser: string, Cedula: string) => {
+export const updateUserUtil = async (userName: string, email: string, Phone: number, idUser: string, Cedula: number) => {
   try {
       return await new Promise((resolve, reject) => {
           dataBase.query(

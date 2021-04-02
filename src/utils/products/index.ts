@@ -85,6 +85,20 @@ export const updateProductUtil = async (idProducts: string, stock: number) => {
   }
 }
 
+export const UpdateProductUtil = async (name: string, stock: number, description: string, tipo: string, idProducts: string) => {
+  try {
+      return await new Promise((resolve, reject) => {
+          dataBase.query(
+            `UPDATE products SET name = '${name}', stock = ${stock}, description = '${description}', tipo = '${tipo}' WHERE idProducts = '${idProducts}';`,
+            (err, data) => err ? reject(err) : resolve(data)
+          );
+        });
+  } catch (error) {
+      console.log(error.message);
+      return false;
+  }
+}
+
 export const deleteProductUtil = async (idProducts: string) => {
   try {
       return await new Promise((resolve, reject) => {
